@@ -22,14 +22,17 @@ export default class Details extends Component {
     const { product } = this.state;
     const attrs = product.attributes;
 
-    const descricao = attrs.map((att) => (<li key={ att.id }>{att.name}</li>));
+    const descricao = attrs.map((att) => (
+      <li key={ att.id }>
+        {att.name}
+        {': '}
+        {att.value_name}
+      </li>));
 
     this.setState({
       showDescription: true,
       description: descricao,
     });
-
-    console.log('descricao', descricao);
   }
 
   render() {
