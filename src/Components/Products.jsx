@@ -64,6 +64,7 @@ export default class Products extends Component {
           : searchResult.map((element) => (
             <ProductCard
               key={ element.id }
+              id={ element.id }
               title={ element.title }
               thumbnail={ element.thumbnail }
               price={ element.price }
