@@ -19,9 +19,19 @@ export default class Products extends Component {
     this.setState({ allCategories });
   }
 
+  getItemsBy = (category, search) => {
+    getProductsFromCategoryAndQuery(category, search)
+      .then((resp) => this.setState({
+        searchResult: resp.results,
+        busca: true,
+      }));
+  };
+
   setCategory = (e) => {
     const categoryId = e.target.id;
+    const { searchParam } = this.state;
     this.setState({ categoryId });
+    this.getItemsBy(categoryId, searchParam);
   };
 
   setSearch = (e) => {
@@ -30,12 +40,8 @@ export default class Products extends Component {
   };
 
   getResults = () => {
-    const { searchParam, categoryId } = this.state;
-    getProductsFromCategoryAndQuery(categoryId, searchParam)
-      .then((resp) => this.setState({
-        searchResult: resp.results,
-        busca: true,
-      }));
+    const { searchParam } = this.state;
+    this.getItemsBy('', searchParam);
   };
 
   render() {
