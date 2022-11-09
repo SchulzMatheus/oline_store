@@ -11,7 +11,7 @@ export default class Products extends Component {
     categoryId: '',
     searchParam: '',
     searchResult: [],
-    busca: false,
+    search: false,
   };
 
   async componentDidMount() {
@@ -19,29 +19,28 @@ export default class Products extends Component {
     this.setState({ allCategories });
   }
 
-  setCategory = (e) => {
-    const categoryId = e.target.id;
+  setCategory = ({ target }) => {
+    const categoryId = target.id;
     this.setState({ categoryId });
   };
 
-  setSearch = (e) => {
-    const searchParam = e.target.value;
+  setSearch = ({ target }) => {
+    const searchParam = target.value;
     this.setState({ searchParam });
   };
 
-  getResults = () => {
+  getResults = async () => {
     const { searchParam, categoryId } = this.state;
-    getProductsFromCategoryAndQuery(categoryId, searchParam)
-      .then((resp) => this.setState({
-        searchResult: resp.results,
-        busca: true,
-      }));
+    const listOfProducts = await getProductsFromCategoryAndQuery(categoryId, searchParam);
+    this.setState({ searchResult: listOfProducts.results, search: true });
   };
 
   render() {
-    const { allCategories, categoryId, searchParam, searchResult, busca } = this.state;
+    const { allCategories, categoryId, searchParam, searchResult, search } = this.state;
+    const controller = searchParam.length === 0 && categoryId.length === 0;
+    const searchController = searchResult.length === 0 && search;
     return (
-      <span data-testid="home-initial-message">
+      <div data-testid="home-initial-message">
         <nav>
           <Link data-testid="shopping-cart-button" to="/shopcart">Carrinho</Link>
         </nav>
@@ -50,11 +49,8 @@ export default class Products extends Component {
           setSearch={ this.setSearch }
           getResults={ this.getResults }
         />
-        { searchParam.length === 0 && categoryId.length === 0
-          && 'Digite algum termo de pesquisa ou escolha uma categoria.' }
-
-        { (searchResult.length === 0
-          && busca)
+        { controller && 'Digite algum termo de pesquisa ou escolha uma categoria.' }
+        { (searchController)
           ? <p>Nenhum produto foi encontrado</p>
           : searchResult.map((element) => (
             <ProductCard
@@ -74,7 +70,7 @@ export default class Products extends Component {
             />
           )) }
         </ul>
-      </span>
+      </div>
     );
   }
 }
