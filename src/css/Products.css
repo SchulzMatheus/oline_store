@@ -1,0 +1,24 @@
+.categoriesContainer {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    background-color: rgb(179, 178, 178);
+    padding: 20px 0 20px;
+    margin-top: 20px;
+}
+
+.mainContainer header {
+  display: flex;
+  justify-content: space-between;
+  padding: 40px;
+  background-color: black;
+  align-items: center;
+}
+
+.cartPng {
+    width: 50px;
+}
+
+.blackFridaypng {
+    width: 150px;
+}

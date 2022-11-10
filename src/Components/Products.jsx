@@ -4,6 +4,9 @@ import { getCategories, getProductsFromCategoryAndQuery } from '../services/api'
 import Categories from './Categories';
 import ProductCard from './ProductCard';
 import SearchInput from './SearchInput';
+import '../css/Products.css';
+import cartPng from '../images/carrinho.png';
+import blackFriday from '../images/blackFriday.gif';
 
 export default class Products extends Component {
   state = {
@@ -49,19 +52,36 @@ export default class Products extends Component {
     const controller = searchParam.length === 0 && categoryId.length === 0;
     const searchController = searchResult.length === 0 && search;
     return (
-      <div data-testid="home-initial-message">
-        <nav>
-          <Link data-testid="shopping-cart-button" to="/shopcart">Carrinho</Link>
-        </nav>
-        <SearchInput
-          searchParam={ searchParam }
-          setSearch={ this.setSearch }
-          getResults={ this.getResults }
-        />
-        { controller && 'Digite algum termo de pesquisa ou escolha uma categoria.' }
-        { (searchController)
-          ? <p>Nenhum produto foi encontrado</p>
-          : searchResult.map((element) => (
+      <div data-testid="home-initial-message" className="container mainContainer ">
+        <header>
+          <SearchInput
+            searchParam={ searchParam }
+            setSearch={ this.setSearch }
+            getResults={ this.getResults }
+          />
+          <img className="blackFridaypng" src={ blackFriday } alt="blackFriday" />
+          <nav>
+            <Link data-testid="shopping-cart-button" to="/shopcart">
+              <img className="cartPng" src={ cartPng } alt="Carrinho" />
+            </Link>
+          </nav>
+        </header>
+        <div className="categoriesContainer">
+          {allCategories.map(({ id, name }) => (
+            <Categories
+              key={ id }
+              name={ name }
+              id={ id }
+              setCategory={ this.setCategory }
+            />
+          ))}
+        </div>
+        {controller
+          && 'Digite algum termo de pesquisa ou escolha uma categoria.'}
+        {searchController ? (
+          <p>Nenhum produto foi encontrado</p>
+        ) : (
+          searchResult.map((element) => (
             <ProductCard
               key={ element.id }
               id={ element.id }
@@ -69,17 +89,8 @@ export default class Products extends Component {
               thumbnail={ element.thumbnail }
               price={ element.price }
             />
-          ))}
-        <ul>
-          { allCategories.map(({ id, name }) => (
-            <Categories
-              key={ id }
-              name={ name }
-              id={ id }
-              setCategory={ this.setCategory }
-            />
-          )) }
-        </ul>
+          ))
+        )}
       </div>
     );
   }
