@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { getProductById } from '../services/api';
-import RatingStar from './RatingStar';
-import UserRatings from './UserRatings';
+import RatingStar from '../Components/RatingStar';
+import UserRatings from '../Components/UserRatings';
+import { setItem, getItem } from '../services/localStorage';
 
 export default class Details extends Component {
   state = {
@@ -18,8 +19,8 @@ export default class Details extends Component {
   async componentDidMount() {
     const { match: { params: { id } } } = this.props;
     const request = await getProductById(id);
-    const allRatings = localStorage.getItem(id)
-      ? JSON.parse(localStorage.getItem(id)) : [];
+    const allRatings = getItem(id)
+      ? JSON.parse(getItem(id)) : [];
     this.setState({ allRatings });
     this.setState({
       product: request,
@@ -57,7 +58,7 @@ export default class Details extends Component {
 
   saveToLocalStorage = () => {
     const { product, allRatings } = this.state;
-    localStorage.setItem(product.id, JSON.stringify(allRatings));
+    setItem(product.id, allRatings);
   };
 
   handleSubmitButton = () => {

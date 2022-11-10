@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import Cartlist from './cartList';
+import Cartlist from '../Components/cartList';
 import { getItem } from '../services/localStorage';
 
 export default class Shopcart extends Component {
