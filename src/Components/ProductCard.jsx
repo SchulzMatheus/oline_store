@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { setItem, getItem } from '../services/localStorage';
 
 export default class ProductCard extends Component {
   handleClick = () => {
     const { title, price, id } = this.props;
-    const savedCartItems = localStorage.getItem('cartSaved');
+    const savedCartItems = getItem('cartSaved');
     let cartItems = [];
 
     if (savedCartItems === null) {
@@ -23,10 +24,10 @@ export default class ProductCard extends Component {
         cartItems.push(product);
       }
 
-      localStorage.setItem('cartSaved', cartItems);
+      setItem('cartSaved', cartItems);
     }
 
-    localStorage.setItem('cartSaved', JSON.stringify(cartItems));
+    setItem('cartSaved', cartItems);
   };
 
   render() {

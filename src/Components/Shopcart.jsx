@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import Cartlist from './cartList';
+import { getItem } from '../services/localStorage';
 
 export default class Shopcart extends Component {
   state = {
@@ -8,7 +9,7 @@ export default class Shopcart extends Component {
   };
 
   componentDidMount() {
-    const savedCartItems = localStorage.getItem('cartSaved');
+    const savedCartItems = getItem('cartSaved');
     if (savedCartItems !== null) {
       const cartItems = JSON.parse(savedCartItems);
       this.setState({ full: true, cardlist: cartItems });
