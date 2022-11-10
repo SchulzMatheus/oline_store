@@ -1,16 +1,18 @@
 .categories label:hover {
-    color: brown;
-    cursor: pointer;  
+  color: brown;
+  cursor: pointer;
 }
- .categories:hover {
-    cursor: pointer;
-    color: brown;
- }
+
+.categories:hover {
+  color: brown;
+  cursor: pointer;
+}
+
 .categories li {
-    list-style: none;
-    color: rgb(0, 0, 0);
+  color: black;
+  list-style: none;
 }
 
 .categories input {
-    margin-left: 7px;
+  margin-left: 7px;
 }

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import '../css/SearchInput.css';
 
 export default class SearchInput extends Component {
   render() {
