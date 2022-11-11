@@ -1,9 +1,6 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
-import Categories from './Categories';
-import ProductCard from './ProductCard';
-import SearchInput from './SearchInput';
 import '../css/Products.css';
 import cartPng from '../images/carrinho.png';
 import blackFriday from '../images/blackFriday.gif';
