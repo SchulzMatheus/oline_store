@@ -52,7 +52,7 @@ export default class Products extends Component {
     const controller = searchParam.length === 0 && categoryId.length === 0;
     const searchController = searchResult.length === 0 && search;
     return (
-      <div data-testid="home-initial-message" className="container mainContainer ">
+      <div className="main">
         <header>
           <SearchInput
             searchParam={ searchParam }
@@ -66,31 +66,38 @@ export default class Products extends Component {
             </Link>
           </nav>
         </header>
-        <div className="categoriesContainer">
-          {allCategories.map(({ id, name }) => (
-            <Categories
-              key={ id }
-              name={ name }
-              id={ id }
-              setCategory={ this.setCategory }
-            />
-          ))}
+        <div
+          data-testid="home-initial-message"
+          className=" mainContainer "
+        >
+          <div className="categoriesContainer">
+            {allCategories.map(({ id, name }) => (
+              <Categories
+                key={ id }
+                name={ name }
+                id={ id }
+                setCategory={ this.setCategory }
+              />
+            ))}
+          </div>
+          <div className="productsResults">
+            {controller
+              && 'Digite algum termo de pesquisa ou escolha uma categoria.'}
+            {searchController ? (
+              <p>Nenhum produto foi encontrado</p>
+            ) : (
+              searchResult.map((element) => (
+                <ProductCard
+                  key={ element.id }
+                  id={ element.id }
+                  title={ element.title }
+                  thumbnail={ element.thumbnail }
+                  price={ element.price }
+                />
+              ))
+            )}
+          </div>
         </div>
-        {controller
-          && 'Digite algum termo de pesquisa ou escolha uma categoria.'}
-        {searchController ? (
-          <p>Nenhum produto foi encontrado</p>
-        ) : (
-          searchResult.map((element) => (
-            <ProductCard
-              key={ element.id }
-              id={ element.id }
-              title={ element.title }
-              thumbnail={ element.thumbnail }
-              price={ element.price }
-            />
-          ))
-        )}
       </div>
     );
   }
