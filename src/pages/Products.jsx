@@ -7,6 +7,7 @@ import blackFriday from '../images/blackFriday.gif';
 import Categories from '../Components/Categories';
 import ProductCard from '../Components/ProductCard';
 import SearchInput from '../Components/SearchInput';
+import Footer from '../Components/Footer';
 
 export default class Products extends Component {
   state = {
@@ -66,10 +67,7 @@ export default class Products extends Component {
             </Link>
           </nav>
         </header>
-        <div
-          data-testid="home-initial-message"
-          className=" mainContainer "
-        >
+        <div data-testid="home-initial-message" className=" mainContainer ">
           <div className="categoriesContainer">
             {allCategories.map(({ id, name }) => (
               <Categories
@@ -81,10 +79,13 @@ export default class Products extends Component {
             ))}
           </div>
           <div className="productsResults">
-            {controller
-              && 'Digite algum termo de pesquisa ou escolha uma categoria.'}
+            {controller && (
+              <h4 className="tapSomething">
+                Digite algum termo de pesquisa ou escolha uma categoria.
+              </h4>
+            )}
             {searchController ? (
-              <p>Nenhum produto foi encontrado</p>
+              <h4 className="productNotFound">Nenhum produto foi encontrado</h4>
             ) : (
               searchResult.map((element) => (
                 <ProductCard
@@ -98,6 +99,7 @@ export default class Products extends Component {
             )}
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
