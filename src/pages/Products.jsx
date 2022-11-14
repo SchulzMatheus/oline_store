@@ -7,7 +7,6 @@ import blackFriday from '../images/blackFriday.gif';
 import Categories from '../Components/Categories';
 import ProductCard from '../Components/ProductCard';
 import SearchInput from '../Components/SearchInput';
-import Footer from '../Components/Footer';
 
 export default class Products extends Component {
   state = {
@@ -99,7 +98,6 @@ export default class Products extends Component {
             )}
           </div>
         </div>
-        <Footer />
       </div>
     );
   }

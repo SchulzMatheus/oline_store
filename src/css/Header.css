@@ -1,0 +1,15 @@
+.mainHeader {
+  align-items: center;
+  background-color: black;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.home {
+  color: whitesmoke;
+}
+
+.home:hover {
+  color: gray;
+}
