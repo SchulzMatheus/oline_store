@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { getProductById } from '../services/api';
 import RatingStar from '../Components/RatingStar';
 import UserRatings from '../Components/UserRatings';
@@ -61,6 +62,34 @@ export default class Details extends Component {
     setItem(product.id, allRatings);
   };
 
+  handleClick = () => {
+    const { product } = this.state;
+    const { title, price, id } = product;
+    const savedCartItems = getItem('cartSaved');
+    let cartItems = [];
+
+    if (savedCartItems === null) {
+      const produtoAdded = { title, price, id, quantity: 1 };
+
+      cartItems = [produtoAdded];
+    } else {
+      cartItems = JSON.parse(savedCartItems);
+      let nextItemControl = true;
+      cartItems.filter((item) => item.id === id).forEach((item) => {
+        nextItemControl = false;
+        item.quantity += 1;
+      });
+      if (nextItemControl) {
+        const produtoAdded = { title, price, id, quantity: 1 };
+        cartItems.push(produtoAdded);
+      }
+
+      setItem('cartSaved', cartItems);
+    }
+
+    setItem('cartSaved', cartItems);
+  };
+
   handleSubmitButton = () => {
     const {
       userEmail: email,
@@ -94,9 +123,9 @@ export default class Details extends Component {
         <p>Especificacoes tecnicas</p>
         { showDescription && description }
 
-        <div data-testid="shopping-cart-button">
-          Cart
-        </div>
+        <nav>
+          <Link data-testid="shopping-cart-button" to="/shopcart">Carrinho</Link>
+        </nav>
         <div>
           <h2>Avaliações</h2>
           <form>
@@ -130,6 +159,13 @@ export default class Details extends Component {
               onClick={ this.handleSubmitButton }
             >
               Avaliar
+            </button>
+            <button
+              type="button"
+              data-testid="product-detail-add-to-cart"
+              onClick={ this.handleClick }
+            >
+              Adicionar ao Carrinho
             </button>
           </form>
         </div>
