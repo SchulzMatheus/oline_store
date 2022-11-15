@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { getProductById } from '../services/api';
 import RatingStar from '../Components/RatingStar';
 import UserRatings from '../Components/UserRatings';
@@ -33,7 +34,7 @@ export default class Details extends Component {
         product: request,
         productImg: request.pictures[0].url,
       },
-      () => this.setDescription()
+      () => this.setDescription(),
     );
   }
 
@@ -91,6 +92,12 @@ export default class Details extends Component {
           nextItemControl = false;
           item.quantity += 1;
         });
+      cartItems
+        .filter((item) => item.id === id)
+        .forEach((item) => {
+          nextItemControl = false;
+          item.quantity += 1;
+        });
       if (nextItemControl) {
         const produtoAdded = { title, price, id, quantity: 1 };
         cartItems.push(produtoAdded);
@@ -120,7 +127,7 @@ export default class Details extends Component {
         userDescription: '',
         userRating: '',
       },
-      this.saveToLocalStorage
+      this.saveToLocalStorage,
     );
   };
 
@@ -140,64 +147,95 @@ export default class Details extends Component {
     const avalBoxes = ['1', '2', '3', '4', '5'];
     console.log(productImg);
     return (
-      <div>
+      <>
         <Header />
-        <h1 data-testid="product-detail-name">{title}</h1>
-        <p data-testid="product-detail-price">{price}</p>
-        <img src={ productImg } alt={ title } data-testid="product-detail-image" />
-
-        <p>Especificacoes tecnicas</p>
-        {showDescription && description}
-
-        <div data-testid="shopping-cart-button">Cart</div>
-        <div>
-          <h2>Avaliações</h2>
-          <form>
-            {appearIfError && <p data-testid="error-msg">Campos inválidos</p>}
-            <input
-              type="email"
-              placeholder="Email"
-              data-testid="product-detail-email"
-              onChange={ this.handleEmail }
-              value={ userEmail }
+        <div className="detailsContainer">
+          <h1 data-testid="product-detail-name">{title}</h1>
+          <p
+            className="price"
+            data-testid="product-detail-price"
+          >
+            {`R$ ${price}`}
+          </p>
+          <div className="thumb-espec">
+            <img
+              src={ productImg }
+              alt={ title }
+              data-testid="product-detail-image"
             />
-            <div>
-              {avalBoxes.map((num) => (
-                <RatingStar
-                  key={ `nota${num}` }
-                  handleRating={ this.handleRating }
-                  userRating={ userRating }
-                  num={ num }
+            <div className="espec">
+              <p>Especificacoes tecnicas</p>
+              {showDescription && description}
+
+              <button
+                className="btn btn-warning mt-4"
+                type="button"
+                data-testid="product-detail-add-to-cart"
+                onClick={ this.handleClick }
+              >
+                Adicionar ao Carrinho
+              </button>
+            </div>
+          </div>
+          <div>
+            <Link
+              className="btn btn-warning"
+              data-testid="shopping-cart-button"
+              to="/shopcart"
+            >
+              Carrinho
+            </Link>
+          </div>
+          <div className="detailsForm">
+            <form>
+              <h2>Avaliações</h2>
+              {appearIfError && <p data-testid="error-msg">Campos inválidos</p>}
+              <input
+                type="email"
+                placeholder="Email"
+                data-testid="product-detail-email"
+                onChange={ this.handleEmail }
+                value={ userEmail }
+              />
+              <h4>Nota</h4>
+              <div>
+                {avalBoxes.map((num) => (
+                  <RatingStar
+                    key={ `nota${num}` }
+                    handleRating={ this.handleRating }
+                    userRating={ userRating }
+                    num={ num }
+                  />
+                ))}
+              </div>
+              <textarea
+                placeholder="Mensagem (opcional)"
+                data-testid="product-detail-evaluation"
+                value={ userDescription }
+                onChange={ this.handleDescription }
+              />
+              <button
+                className="btn btn-primary"
+                type="button"
+                data-testid="submit-review-btn"
+                onClick={ this.handleSubmitButton }
+              >
+                Avaliar
+              </button>
+            </form>
+            <div className="rated">
+              {allRatings.map(({ email, text, rating }) => (
+                <UserRatings
+                  key={ `${email}-rating${Math.random()}` }
+                  email={ email }
+                  text={ text }
+                  rating={ rating }
                 />
               ))}
             </div>
-            <textarea
-              placeholder="Mensagem (opcional)"
-              data-testid="product-detail-evaluation"
-              value={ userDescription }
-              onChange={ this.handleDescription }
-            />
-            <button
-              className="btn btn-primary"
-              type="button"
-              data-testid="submit-review-btn"
-              onClick={ this.handleSubmitButton }
-            >
-              Avaliar
-            </button>
-          </form>
-          <div className="rated">
-            {allRatings.map(({ email, text, rating }) => (
-              <UserRatings
-                key={ `${email}-rating${Math.random()}` }
-                email={ email }
-                text={ text }
-                rating={ rating }
-              />
-            ))}
           </div>
         </div>
-      </div>
+      </>
     );
   }
 }
