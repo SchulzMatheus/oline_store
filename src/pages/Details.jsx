@@ -20,15 +20,21 @@ export default class Details extends Component {
   };
 
   async componentDidMount() {
-    const { match: { params: { id } } } = this.props;
+    const {
+      match: {
+        params: { id },
+      },
+    } = this.props;
     const request = await getProductById(id);
-    const allRatings = getItem(id)
-      ? JSON.parse(getItem(id)) : [];
+    const allRatings = getItem(id) ? JSON.parse(getItem(id)) : [];
     this.setState({ allRatings });
-    this.setState({
-      product: request,
-      productImg: request.pictures[0].url,
-    }, () => this.setDescription());
+    this.setState(
+      {
+        product: request,
+        productImg: request.pictures[0].url,
+      },
+      () => this.setDescription()
+    );
   }
 
   setDescription() {
@@ -40,7 +46,8 @@ export default class Details extends Component {
         {att.name}
         {': '}
         {att.value_name}
-      </li>));
+      </li>
+    ));
 
     this.setState({
       showDescription: true,
@@ -65,6 +72,36 @@ export default class Details extends Component {
     setItem(product.id, allRatings);
   };
 
+  handleClick = () => {
+    const { product } = this.state;
+    const { title, price, id } = product;
+    const savedCartItems = getItem('cartSaved');
+    let cartItems = [];
+
+    if (savedCartItems === null) {
+      const produtoAdded = { title, price, id, quantity: 1 };
+
+      cartItems = [produtoAdded];
+    } else {
+      cartItems = JSON.parse(savedCartItems);
+      let nextItemControl = true;
+      cartItems
+        .filter((item) => item.id === id)
+        .forEach((item) => {
+          nextItemControl = false;
+          item.quantity += 1;
+        });
+      if (nextItemControl) {
+        const produtoAdded = { title, price, id, quantity: 1 };
+        cartItems.push(produtoAdded);
+      }
+
+      setItem('cartSaved', cartItems);
+    }
+
+    setItem('cartSaved', cartItems);
+  };
+
   handleSubmitButton = () => {
     const {
       userEmail: email,
@@ -75,13 +112,16 @@ export default class Details extends Component {
     if (email.length === 0 || rating === 0) {
       return this.setState({ appearIfError: true });
     }
-    this.setState({
-      allRatings: [...allRatings, { email, text, rating }],
-      appearIfError: false,
-      userEmail: '',
-      userDescription: '',
-      userRating: '',
-    }, this.saveToLocalStorage);
+    this.setState(
+      {
+        allRatings: [...allRatings, { email, text, rating }],
+        appearIfError: false,
+        userEmail: '',
+        userDescription: '',
+        userRating: '',
+      },
+      this.saveToLocalStorage
+    );
   };
 
   render() {
@@ -100,78 +140,64 @@ export default class Details extends Component {
     const avalBoxes = ['1', '2', '3', '4', '5'];
     console.log(productImg);
     return (
-      <>
+      <div>
         <Header />
-        <div className="detailsContainer">
-          <h1 data-testid="product-detail-name">{title}</h1>
-          <p
-            className="price"
-            data-testid="product-detail-price"
-          >
-            {`${price} R$`}
-          </p>
-          <div className="thumb-espec">
-            <img
-              src={ productImg }
-              alt={ title }
-              data-testid="product-detail-image"
+        <h1 data-testid="product-detail-name">{title}</h1>
+        <p data-testid="product-detail-price">{price}</p>
+        <img src={ productImg } alt={ title } data-testid="product-detail-image" />
+
+        <p>Especificacoes tecnicas</p>
+        {showDescription && description}
+
+        <div data-testid="shopping-cart-button">Cart</div>
+        <div>
+          <h2>Avaliações</h2>
+          <form>
+            {appearIfError && <p data-testid="error-msg">Campos inválidos</p>}
+            <input
+              type="email"
+              placeholder="Email"
+              data-testid="product-detail-email"
+              onChange={ this.handleEmail }
+              value={ userEmail }
             />
-            <div className="espec">
-              <p>Especificacoes tecnicas</p>
-              {showDescription && description}
-            </div>
-          </div>
-          <div data-testid="shopping-cart-button">Cart</div>
-          <div className="detailsForm">
-            <h2>Avaliações</h2>
-            <form>
-              {appearIfError && <p data-testid="error-msg">Campos inválidos</p>}
-              <input
-                type="email"
-                placeholder="Email"
-                data-testid="product-detail-email"
-                onChange={ this.handleEmail }
-                value={ userEmail }
-              />
-              <p>Nota</p>
-              <div>
-                {avalBoxes.map((num) => (
-                  <RatingStar
-                    key={ `nota${num}` }
-                    handleRating={ this.handleRating }
-                    userRating={ userRating }
-                    num={ num }
-                  />
-                ))}
-              </div>
-              <textarea
-                placeholder="Mensagem (opcional)"
-                data-testid="product-detail-evaluation"
-                value={ userDescription }
-                onChange={ this.handleDescription }
-              />
-              <button
-                className="btn btn-primary"
-                type="button"
-                data-testid="submit-review-btn"
-                onClick={ this.handleSubmitButton }
-              >
-                Avaliar
-              </button>
-            </form>
-            <div className="rated">
-              {allRatings.map(({ email, text, rating }) => (
-                <UserRatings
-                  key={ `${email}-rating${Math.random()}` }
-                  email={ email }
-                  text={ text }
-                  rating={ rating }
+            <div>
+              {avalBoxes.map((num) => (
+                <RatingStar
+                  key={ `nota${num}` }
+                  handleRating={ this.handleRating }
+                  userRating={ userRating }
+                  num={ num }
                 />
               ))}
             </div>
+            <textarea
+              placeholder="Mensagem (opcional)"
+              data-testid="product-detail-evaluation"
+              value={ userDescription }
+              onChange={ this.handleDescription }
+            />
+            <button
+              className="btn btn-primary"
+              type="button"
+              data-testid="submit-review-btn"
+              onClick={ this.handleSubmitButton }
+            >
+              Avaliar
+            </button>
+          </form>
+          <div className="rated">
+            {allRatings.map(({ email, text, rating }) => (
+              <UserRatings
+                key={ `${email}-rating${Math.random()}` }
+                email={ email }
+                text={ text }
+                rating={ rating }
+              />
+            ))}
           </div>
         </div>
-      </>
+      </div>
     );
   }
 }
