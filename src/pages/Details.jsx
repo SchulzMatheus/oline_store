@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { getProductById } from '../services/api';
 import RatingStar from '../Components/RatingStar';
 import UserRatings from '../Components/UserRatings';
@@ -176,15 +175,6 @@ export default class Details extends Component {
                 Adicionar ao Carrinho
               </button>
             </div>
-          </div>
-          <div>
-            <Link
-              className="btn btn-warning"
-              data-testid="shopping-cart-button"
-              to="/shopcart"
-            >
-              Carrinho
-            </Link>
           </div>
           <div className="detailsForm">
             <form>

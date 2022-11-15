@@ -80,3 +80,11 @@
   word-wrap: break-word;
 
 }
+
+.detailsForm form h2 {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+
+}
