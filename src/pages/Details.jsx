@@ -91,12 +91,6 @@ export default class Details extends Component {
           nextItemControl = false;
           item.quantity += 1;
         });
-      cartItems
-        .filter((item) => item.id === id)
-        .forEach((item) => {
-          nextItemControl = false;
-          item.quantity += 1;
-        });
       if (nextItemControl) {
         const produtoAdded = { title, price, id, quantity: 1 };
         cartItems.push(produtoAdded);
