@@ -1,6 +1,9 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
+import '../css/Products.css';
+import cartPng from '../images/carrinho.png';
+import blackFriday from '../images/blackFriday.gif';
 import Categories from '../Components/Categories';
 import ProductCard from '../Components/ProductCard';
 import SearchInput from '../Components/SearchInput';
@@ -49,37 +52,52 @@ export default class Products extends Component {
     const controller = searchParam.length === 0 && categoryId.length === 0;
     const searchController = searchResult.length === 0 && search;
     return (
-      <div data-testid="home-initial-message">
-        <nav>
-          <Link data-testid="shopping-cart-button" to="/shopcart">Carrinho</Link>
-        </nav>
-        <SearchInput
-          searchParam={ searchParam }
-          setSearch={ this.setSearch }
-          getResults={ this.getResults }
-        />
-        { controller && 'Digite algum termo de pesquisa ou escolha uma categoria.' }
-        { (searchController)
-          ? <p>Nenhum produto foi encontrado</p>
-          : searchResult.map((element) => (
-            <ProductCard
-              key={ element.id }
-              id={ element.id }
-              title={ element.title }
-              thumbnail={ element.thumbnail }
-              price={ element.price }
-            />
-          ))}
-        <ul>
-          { allCategories.map(({ id, name }) => (
-            <Categories
-              key={ id }
-              name={ name }
-              id={ id }
-              setCategory={ this.setCategory }
-            />
-          )) }
-        </ul>
+      <div className="main">
+        <header>
+          <SearchInput
+            searchParam={ searchParam }
+            setSearch={ this.setSearch }
+            getResults={ this.getResults }
+          />
+          <img className="blackFridaypng" src={ blackFriday } alt="blackFriday" />
+          <nav>
+            <Link data-testid="shopping-cart-button" to="/shopcart">
+              <img className="cartPng" src={ cartPng } alt="Carrinho" />
+            </Link>
+          </nav>
+        </header>
+        <div data-testid="home-initial-message" className=" mainContainer ">
+          <div className="categoriesContainer">
+            {allCategories.map(({ id, name }) => (
+              <Categories
+                key={ id }
+                name={ name }
+                id={ id }
+                setCategory={ this.setCategory }
+              />
+            ))}
+          </div>
+          <div className="productsResults">
+            {controller && (
+              <h4 className="tapSomething">
+                Digite algum termo de pesquisa ou escolha uma categoria.
+              </h4>
+            )}
+            {searchController ? (
+              <h4 className="productNotFound">Nenhum produto foi encontrado</h4>
+            ) : (
+              searchResult.map((element) => (
+                <ProductCard
+                  key={ element.id }
+                  id={ element.id }
+                  title={ element.title }
+                  thumbnail={ element.thumbnail }
+                  price={ element.price }
+                />
+              ))
+            )}
+          </div>
+        </div>
       </div>
     );
   }

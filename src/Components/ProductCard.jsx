@@ -33,13 +33,18 @@ export default class ProductCard extends Component {
   render() {
     const { id, title, thumbnail, price } = this.props;
     return (
-      <div data-testid="product">
+      <div data-testid="product" className="product">
         <p>{title}</p>
-        <Link to={ `product-details/${id}` } data-testid="product-detail-link">
+        <Link
+          className="linkPrice"
+          to={ `product-details/${id}` }
+          data-testid="product-detail-link"
+        >
           <img src={ thumbnail } alt={ title } />
-          <p>{`R$ ${price}`}</p>
+          <p className="price">{`R$ ${price}`}</p>
         </Link>
         <button
+          className="btn btn-primary"
           type="button"
           data-testid="product-add-to-cart"
           onClick={ this.handleClick }

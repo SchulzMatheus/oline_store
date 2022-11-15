@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { getProductById } from '../services/api';
 import RatingStar from '../Components/RatingStar';
 import UserRatings from '../Components/UserRatings';
 import { setItem, getItem } from '../services/localStorage';
+import '../css/Details.css';
+import Header from '../Components/Header';
 
 export default class Details extends Component {
   state = {
@@ -15,17 +16,25 @@ export default class Details extends Component {
     userDescription: '',
     appearIfError: false,
     allRatings: [],
+    productImg: '',
   };
 
   async componentDidMount() {
-    const { match: { params: { id } } } = this.props;
+    const {
+      match: {
+        params: { id },
+      },
+    } = this.props;
     const request = await getProductById(id);
-    const allRatings = getItem(id)
-      ? JSON.parse(getItem(id)) : [];
+    const allRatings = getItem(id) ? JSON.parse(getItem(id)) : [];
     this.setState({ allRatings });
-    this.setState({
-      product: request,
-    }, () => this.setDescription());
+    this.setState(
+      {
+        product: request,
+        productImg: request.pictures[0].url,
+      },
+      () => this.setDescription(),
+    );
   }
 
   setDescription() {
@@ -37,7 +46,8 @@ export default class Details extends Component {
         {att.name}
         {': '}
         {att.value_name}
-      </li>));
+      </li>
+    ));
 
     this.setState({
       showDescription: true,
@@ -75,10 +85,18 @@ export default class Details extends Component {
     } else {
       cartItems = JSON.parse(savedCartItems);
       let nextItemControl = true;
-      cartItems.filter((item) => item.id === id).forEach((item) => {
-        nextItemControl = false;
-        item.quantity += 1;
-      });
+      cartItems
+        .filter((item) => item.id === id)
+        .forEach((item) => {
+          nextItemControl = false;
+          item.quantity += 1;
+        });
+      cartItems
+        .filter((item) => item.id === id)
+        .forEach((item) => {
+          nextItemControl = false;
+          item.quantity += 1;
+        });
       if (nextItemControl) {
         const produtoAdded = { title, price, id, quantity: 1 };
         cartItems.push(produtoAdded);
@@ -100,86 +118,114 @@ export default class Details extends Component {
     if (email.length === 0 || rating === 0) {
       return this.setState({ appearIfError: true });
     }
-    this.setState({
-      allRatings: [...allRatings, { email, text, rating }],
-      appearIfError: false,
-      userEmail: '',
-      userDescription: '',
-      userRating: '',
-    }, this.saveToLocalStorage);
+    this.setState(
+      {
+        allRatings: [...allRatings, { email, text, rating }],
+        appearIfError: false,
+        userEmail: '',
+        userDescription: '',
+        userRating: '',
+      },
+      this.saveToLocalStorage,
+    );
   };
 
   render() {
-    const { product, description, showDescription,
-      userEmail, userRating, userDescription, allRatings, appearIfError } = this.state;
-    const { title, price, thumbnail } = product;
+    const {
+      product,
+      description,
+      showDescription,
+      userEmail,
+      userRating,
+      userDescription,
+      allRatings,
+      appearIfError,
+      productImg,
+    } = this.state;
+    const { title, price } = product;
     const avalBoxes = ['1', '2', '3', '4', '5'];
+    console.log(productImg);
     return (
-      <div>
-        <h1 data-testid="product-detail-name">{ title }</h1>
-        <p data-testid="product-detail-price">{ price }</p>
-        <img src={ thumbnail } alt={ title } data-testid="product-detail-image" />
-
-        <p>Especificacoes tecnicas</p>
-        { showDescription && description }
-
-        <nav>
-          <Link data-testid="shopping-cart-button" to="/shopcart">Carrinho</Link>
-        </nav>
-        <div>
-          <h2>Avaliações</h2>
-          <form>
-            { appearIfError && <p data-testid="error-msg">Campos inválidos</p> }
-            <input
-              type="email"
-              placeholder="Email"
-              data-testid="product-detail-email"
-              onChange={ this.handleEmail }
-              value={ userEmail }
+      <>
+        <Header />
+        <div className="detailsContainer">
+          <h1 data-testid="product-detail-name">{title}</h1>
+          <p
+            className="price"
+            data-testid="product-detail-price"
+          >
+            {`R$ ${price}`}
+          </p>
+          <div className="thumb-espec">
+            <img
+              src={ productImg }
+              alt={ title }
+              data-testid="product-detail-image"
             />
-            <div>
-              { avalBoxes.map((num) => (
-                <RatingStar
-                  key={ `nota${num}` }
-                  handleRating={ this.handleRating }
-                  userRating={ userRating }
-                  num={ num }
-                />
-              )) }
+            <div className="espec">
+              <p>Especificacoes tecnicas</p>
+              {showDescription && description}
+
+              <button
+                className="btn btn-warning mt-4"
+                type="button"
+                data-testid="product-detail-add-to-cart"
+                onClick={ this.handleClick }
+              >
+                Adicionar ao Carrinho
+              </button>
             </div>
-            <textarea
-              placeholder="Mensagem (opcional)"
-              data-testid="product-detail-evaluation"
-              value={ userDescription }
-              onChange={ this.handleDescription }
-            />
-            <button
-              type="button"
-              data-testid="submit-review-btn"
-              onClick={ this.handleSubmitButton }
-            >
-              Avaliar
-            </button>
-            <button
-              type="button"
-              data-testid="product-detail-add-to-cart"
-              onClick={ this.handleClick }
-            >
-              Adicionar ao Carrinho
-            </button>
-          </form>
+          </div>
+          <div className="detailsForm">
+            <form>
+              <h2>Avaliações</h2>
+              {appearIfError && <p data-testid="error-msg">Campos inválidos</p>}
+              <input
+                type="email"
+                placeholder="Email"
+                data-testid="product-detail-email"
+                onChange={ this.handleEmail }
+                value={ userEmail }
+              />
+              <h4>Nota</h4>
+              <div>
+                {avalBoxes.map((num) => (
+                  <RatingStar
+                    key={ `nota${num}` }
+                    handleRating={ this.handleRating }
+                    userRating={ userRating }
+                    num={ num }
+                  />
+                ))}
+              </div>
+              <textarea
+                placeholder="Mensagem (opcional)"
+                data-testid="product-detail-evaluation"
+                value={ userDescription }
+                onChange={ this.handleDescription }
+              />
+              <button
+                className="btn btn-primary"
+                type="button"
+                data-testid="submit-review-btn"
+                onClick={ this.handleSubmitButton }
+              >
+                Avaliar
+              </button>
+            </form>
+            <div className="rated">
+              {allRatings.map(({ email, text, rating }) => (
+                <UserRatings
+                  key={ `${email}-rating${Math.random()}` }
+                  email={ email }
+                  text={ text }
+                  rating={ rating }
+                />
+              ))}
+            </div>
+          </div>
         </div>
-        <div>
-          { allRatings.map(({ email, text, rating }) => (
-            <UserRatings
-              key={ `${email}-rating${Math.random()}` }
-              email={ email }
-              text={ text }
-              rating={ rating }
-            />
-          )) }
-        </div>
-      </div>
+      </>
     );
   }
 }

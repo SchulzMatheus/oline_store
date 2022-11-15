@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import '../css/RatingStar.css';
 
 export default class RatingStar extends Component {
   render() {
@@ -6,6 +7,7 @@ export default class RatingStar extends Component {
     const isNumEqual = (Number(num) <= Number(userRating));
     return (
       <input
+        className="rating"
         type="radio"
         onClick={ handleRating }
         value={ num }

@@ -4,7 +4,7 @@ export default class SearchInput extends Component {
   render() {
     const { searchParam, setSearch, getResults } = this.props;
     return (
-      <div>
+      <div className="search">
         <input
           value={ searchParam }
           placeholder="Buscar"
@@ -12,6 +12,7 @@ export default class SearchInput extends Component {
           data-testid="query-input"
         />
         <button
+          className="btn btn-warning"
           type="button"
           data-testid="query-button"
           onClick={ getResults }
