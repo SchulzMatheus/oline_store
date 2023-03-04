@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { setItem, getItem } from '../services/localStorage';
+dasdasdasdasda
 
 export default class ProductCard extends Component {
   handleClick = () => {
